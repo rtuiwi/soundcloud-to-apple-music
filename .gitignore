@@ -1,0 +1,35 @@
+# Personal collections, downloads, artwork, import history and cookies
+data/
+**/data/
+cookies*.txt
+**/cookies*.txt
+.env
+.env.*
+*.pem
+*.key
+credentials*.json
+secrets*.json
+
+# Local Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Generated audio and archives
+*.mp3
+*.m4a
+*.aac
+*.wav
+*.aiff
+*.aif
+*.flac
+*.ogg
+*.opus
+*.webm
+*.zip
+*.log
+.DS_Store
