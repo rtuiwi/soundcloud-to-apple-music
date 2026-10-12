@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="session-token" content="__SESSION_TOKEN__">
+  <title>Перенос · SoundCloud в Музыку</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="Перенос — главная"><span class="brand-mark" aria-hidden="true">↗</span><span>перенос<span class="brand-caption">твои треки, рядом</span></span></a>
+      <h1>Из сохранённого<br>в любимое.</h1>
+      <p class="intro">Выбери песни из SoundCloud.<br>Добавь их в свою «Музыку».</p>
+      <details id="connection-settings" class="connection-settings" open>
+      <summary>Источник и плейлист</summary>
+      <form id="profile-form">
+        <label for="profile">Профиль или плейлист SoundCloud</label>
+        <input id="profile" name="profile" type="url" required placeholder="https://soundcloud.com/…" spellcheck="false">
+        <button id="load" class="button secondary" type="submit">Загрузить список <span aria-hidden="true">↗</span></button>
+      </form>
+      <div class="settings">
+        <label for="playlist">Плейлист в «Музыке»</label>
+        <input id="playlist" maxlength="100" value="Из SoundCloud" placeholder="Из SoundCloud">
+        <label class="switch-label" for="import"><input id="import" type="checkbox" checked><span class="switch" aria-hidden="true"></span><span>Импортировать после скачивания</span></label>
+        <p class="field-help">При первом импорте macOS запросит доступ к приложению «Музыка».</p>
+      </div>
+      </details>
+      <div class="sidebar-bottom">
+        <button class="text-button" id="artwork" type="button" hidden>Добавить обложки перенесённым</button>
+        <button class="text-button" id="reveal" type="button"><span aria-hidden="true">↗</span> Открыть папку с файлами</button>
+        <details class="help"><summary>Как это работает</summary><p>Список берётся из Likes твоего профиля или из указанного плейлиста. Выбранные песни скачиваются по одной с обложками, затем добавляются в медиатеку «Музыки» и выбранный плейлист.</p><p>Недоступные песни и превью пропускаются. Повторно импортированные этим инструментом треки не добавляются, даже если сменить плейлист. Обложки уже перенесённых песен можно добавить отдельной кнопкой.</p><p>Для появления песен на iPhone включи «Синхронизацию медиатеки» в «Музыке». Возможность синхронизации зависит от подписки и файла.</p></details>
+        <details class="help auth-help"><summary>Закрытые треки</summary><p>Для закрытого списка выбери экспортированный файл cookies.txt SoundCloud в формате Netscape. Инструмент сохранит локально только cookies SoundCloud. Исходный файл останется без изменений.</p><button id="cookies" type="button" class="button secondary">Выбрать cookies.txt</button><p id="cookies-status" role="status">Вход не подключён</p></details>
+        <div class="local-note"><span></span> Работает на твоём Mac</div>
+      </div>
+    </aside>
+    <main>
+      <header class="topbar"><span>ТВОЯ КОЛЛЕКЦИЯ</span><span class="connection" id="connection">Подключаемся…</span></header>
+      <section class="collection">
+        <div class="collection-heading"><div><h2>Сохранённые треки<span class="track-count" id="track-count">0</span></h2><p id="collection-description">Загрузи список и выбери, что взять с собой.</p></div><div class="heart" aria-hidden="true">♡</div></div>
+        <div id="notice" role="status" class="notice" hidden></div>
+        <div class="toolbar">
+          <label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Найти трек или исполнителя" aria-label="Поиск трека или исполнителя"></label>
+          <select id="filter" aria-label="Фильтр треков"><option value="all">Все треки</option><option value="pending">Ещё не добавлены</option><option value="done">Добавленные</option><option value="error">С ошибкой</option><option value="unavailable">Недоступные</option></select>
+          <select id="sort" aria-label="Порядок треков"><option value="recent">Порядок SoundCloud</option><option value="title">По названию</option><option value="artist">По исполнителю</option></select>
+        </div>
+        <div class="list-header"><label class="select-all"><input id="select-all" type="checkbox" aria-label="Выбрать все видимые треки"><span id="visible-count">Выбрать все</span></label><span>ДЛИТЕЛЬНОСТЬ</span><span>СТАТУС</span></div>
+        <div id="track-list" class="track-list" aria-label="Список треков"></div>
+        <button id="show-more" class="button secondary more-button" type="button" hidden>Показать ещё</button>
+        <div id="empty" class="empty"><h3>Здесь будут твои песни</h3><p>Вставь ссылку на свой профиль или плейлист SoundCloud.<br>Нажми «Загрузить список», чтобы увидеть песни.</p><button id="empty-load" class="button secondary" type="button">Загрузить мои треки <span aria-hidden="true">↗</span></button></div>
+      </section>
+      <footer class="actionbar">
+        <div class="selection-info"><div class="selection-top" id="selection-count">Выбери треки для переноса</div><div class="selection-meta" id="selection-meta">Файлы останутся на твоём Mac</div></div>
+        <button id="clear" class="text-button" type="button" hidden>Снять выбор</button>
+        <button id="transfer" class="button primary" type="button" disabled>Скачать и добавить <span aria-hidden="true">→</span></button>
+        <button id="cancel" class="button secondary" type="button" hidden>Остановить</button>
+        <div class="job-panel" id="job-panel" hidden><div class="job-heading"><span id="job-message" role="status" aria-live="polite"></span><span id="job-count"></span></div><progress id="job-progress" max="1" value="0"></progress></div>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>
